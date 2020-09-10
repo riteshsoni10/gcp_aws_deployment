@@ -21,3 +21,19 @@ variable "gcp_region_name" {
     description = "Region Name to launch GCP Resources"
 
 }
+
+variable "gcp_project_id" {
+    type = string
+    description = "Unique Project Id for Application Deployment"
+}
+
+variable "gcp_network_name" {
+    type = string
+    description = "GCP VPC Network Name"
+}
+
+
+variable "gcp_subnet_cidr" {
+    type = string
+    description = "Application Subnet CIDR/ Prefix"
+}
