@@ -10,6 +10,21 @@ resource "google_compute_vpn_gateway" "gcp_aws_gateway" {
     network = var.gcp_network_id
 }
 
+## ESP Forwarding rule
+resource "google_compute_forwarding_rule" "esp_forward" {
+  name        = "fr-esp"
+  ip_protocol = "ESP"
+  ip_address  = google_compute_address.vpn_ip.address
+  target      = google_compute_vpn_gateway.gcp_aws_gateway.self_link
+  
+  depends_on = [
+      google_compute_address.vpn_ip,
+      google_compute_vpn_gateway.gcp_aws_gateway
+
+  ]
+}
+
+
 ## Google Compute Router
 
 resource "google_compute_router" "gcp_vpn_router" {
