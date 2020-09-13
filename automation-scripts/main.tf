@@ -50,3 +50,13 @@ module "gcp_aws_vpn" {
     aws_route_table_ids = [module.aws_cloud.public_route_table_id, module.aws_cloud.private_route_table_id]
     gcp_network_id = module.gcp_cloud.network_id
 }
+
+module "database_server" {
+   source = "./modules/db_server"
+   vpc_id             = module.aws_cloud.vpc_id
+   gcp_network_cidr   = var.gcp_subnet_cidr
+   ami_id             = var.aws_db_ami_id
+   instance_type      = var.aws_db_instance_type
+   private_subnet_id  = module.aws_cloud.private_subnet_id
+   key_name           = var.aws_db_key_name
+}

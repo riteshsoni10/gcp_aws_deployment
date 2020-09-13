@@ -15,6 +15,23 @@ variable "aws_vpc_cidr_block" {
 }
 
 
+variable "aws_db_ami_id" {
+	type = string
+	description = "Database Server AMI Id "
+}
+
+variable "aws_db_instance_type" {
+	type = string
+	description = "Database Server Configuration "
+	default = "t2.micro"
+}
+
+variable "aws_db_key_name" {
+	type = string
+	description = " Database Server Instance Login Key Name"
+	default = "aws_db_key"
+}
+
 ## GCP Variables
 
 variable "gcp_credentials_file_name" {

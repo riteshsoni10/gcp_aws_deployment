@@ -1,0 +1,62 @@
+## Security Group
+
+resource "aws_security_group" "db_server_security_group" {
+	name = "allow_ssh_mysql_access"
+	description = "Mysql Server Access from GCP and SSH from VPC Network"
+	vpc_id     = var.vpc_id
+	
+	ingress {
+		protocol = "tcp"
+		from_port = 22
+		to_port = 22
+		cidr_blocks = [var.vpc_cidr_block]
+		description = "SSH Access"
+	}
+	
+	ingress {
+		protocol = "tcp"
+		from_port = 3306
+		to_port = 3306
+		cidr_blocks = [var.gcp_network_cidr]
+		description = "Mysql Server Access from GCP Cloud "
+	}
+
+	egress {
+		protocol = -1
+		from_port = 0
+		to_port = 0
+		cidr_blocks = ["0.0.0.0/0"]
+	}
+
+	tags = {
+		Name = "Database SG"
+	}
+}
+
+
+## SEcurity Group for Bastion Host
+resource "aws_security_group" "bastion_security_group" {
+        name = "allow_ssh_access"
+        description = "SSH from everywhere"
+        vpc_id     = var.vpc_id
+
+        ingress {
+                protocol = "tcp"
+                from_port = 22
+                to_port = 22
+                cidr_blocks = ["0.0.0.0/0"]
+                description = "SSH Access"
+        }
+
+        egress {
+                protocol = -1
+                from_port = 0
+                to_port = 0
+                cidr_blocks = ["0.0.0.0/0"]
+        }
+
+        tags = {
+                Name = "Bastion SG"
+        }
+}
+
