@@ -26,7 +26,6 @@ resource "google_compute_forwarding_rule" "esp_forward" {
 
 ## UP 500 Routing Rule
 resource "google_compute_forwarding_rule" "udp500" {
-  project     = var.google_project_id
   name        = "fr-udp500"
   ip_protocol = "UDP"
   port_range  = "500-500"
@@ -41,7 +40,6 @@ resource "google_compute_forwarding_rule" "udp500" {
 }
 
 resource "google_compute_forwarding_rule" "udp4500" {
-  project     = var.google_project_id
   name        = "fr-udp4500"
   ip_protocol = "UDP"
   port_range  = "4500-4500"
