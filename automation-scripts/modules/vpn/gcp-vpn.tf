@@ -16,13 +16,45 @@ resource "google_compute_forwarding_rule" "esp_forward" {
   ip_protocol = "ESP"
   ip_address  = google_compute_address.vpn_ip.address
   target      = google_compute_vpn_gateway.gcp_aws_gateway.self_link
-  
+
   depends_on = [
       google_compute_address.vpn_ip,
       google_compute_vpn_gateway.gcp_aws_gateway
 
   ]
 }
+
+## UP 500 Routing Rule
+resource "google_compute_forwarding_rule" "udp500" {
+  project     = var.google_project_id
+  name        = "fr-udp500"
+  ip_protocol = "UDP"
+  port_range  = "500-500"
+   ip_address  = google_compute_address.vpn_ip.address
+  target      = google_compute_vpn_gateway.gcp_aws_gateway.self_link
+
+  depends_on = [
+      google_compute_address.vpn_ip,
+      google_compute_vpn_gateway.gcp_aws_gateway
+
+  ]
+}
+
+resource "google_compute_forwarding_rule" "udp4500" {
+  project     = var.google_project_id
+  name        = "fr-udp4500"
+  ip_protocol = "UDP"
+  port_range  = "4500-4500"
+   ip_address  = google_compute_address.vpn_ip.address
+  target      = google_compute_vpn_gateway.gcp_aws_gateway.self_link
+
+  depends_on = [
+      google_compute_address.vpn_ip,
+      google_compute_vpn_gateway.gcp_aws_gateway
+
+  ]
+}
+
 
 
 ## Google Compute Router
