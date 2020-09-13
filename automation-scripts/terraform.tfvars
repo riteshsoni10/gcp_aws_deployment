@@ -1,10 +1,11 @@
 aws_region_name  = "ap-southeast-1"
 aws_user_profile ="aws_terraform_user"
+aws_vpc_cidr_block = "10.100.0.0/16"
 gcp_region_name  = "asia-southeast1"
 gcp_credentials_file_name = "gcp_creds.json"
 gcp_project_id     = "nodejs-frontend-app"
 gcp_subnet_cidr    = "10.10.100.0/24"
-gcp_network_name   = "application"
+gcp_network_name   = "gcp-application"
 gcp_cluster_name   = "kubernetes-cluster"
 gcp_cluster_zone   = "asia-southeast1"
 gcp_load_balancing_state = false
