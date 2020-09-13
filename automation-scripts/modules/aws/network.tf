@@ -5,7 +5,7 @@ resource "aws_internet_gateway" "application_igw" {
         Name = "Backend-IGW"
     }
     depends_on = [
-        aws_vpc.backend_vpc
+        aws_vpc.backend_network
     ]
 }
 
@@ -61,7 +61,7 @@ resource "aws_route_table" "private_route_table" {
 
 ## Public Route Table Association => Public-Subnets
 resource "aws_route_table_association" "public_route_table_association" {
-    count          = length(data.aws_availability_zones.availability_zones.names)
+    count          = length(data.aws_availability_zones.available_zones.names)
     subnet_id      = element(aws_subnet.public_subnets.*.id,count.index)
     route_table_id = aws_route_table.public_route_table.id
 
@@ -74,7 +74,7 @@ resource "aws_route_table_association" "public_route_table_association" {
 ## Private Route Table Association => Private subnets
 
 resource "aws_route_table_association" "private_route_table_association" {
-    count      = length(data.availability_zones.availability_zones.names)
+    count      = length(data.aws_availability_zones.available_zones.names)
     subnet_id  = element(aws_subnet.private_subnets.*.id,count.index)
     route_table_id = aws_route_table.private_route_table.id
 
