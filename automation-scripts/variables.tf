@@ -9,6 +9,12 @@ variable "aws_user_profile" {
 }
 
 
+variable "aws_vpc_cidr_block" {
+    type = string
+    description = "AWS VPC CIDR Block"
+}
+
+
 ## GCP Variables
 
 variable "gcp_credentials_file_name" {

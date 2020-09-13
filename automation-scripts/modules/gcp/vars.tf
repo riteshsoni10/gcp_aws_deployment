@@ -7,7 +7,7 @@ variable "project_id" {
 variable "network_name" {
     type = string
     description = "VPC Network Name"
-    default = "application"
+    default = "gcp-application"
 }
 
 variable "subnet_cidr" {
