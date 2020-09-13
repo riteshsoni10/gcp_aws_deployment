@@ -38,3 +38,15 @@ module "gcp_cloud" {
     pod_scaling_state = var.gcp_pod_scaling_state
     node_pool_name = var.gcp_node_pool_name
 }
+
+module "aws_cloud" {
+    source = "./modules/aws"
+    vpc_cidr_block = var.aws_vpc_cidr_block
+}
+
+module "gcp_aws_vpn" {
+    source = "./modules/vpn"
+    aws_vpc_id = module.aws_cloud.vpc_id
+    aws_route_table_ids = [module.aws_cloud.public_route_table_id, module.aws_cloud.private_route_table_id]
+    gcp_network_id = module.gcp_cloud.network_id
+}
