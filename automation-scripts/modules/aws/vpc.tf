@@ -15,13 +15,13 @@ resource "aws_vpc" "backend_network" {
 ## Subnets
 
 resource "aws_subnet" "public_subnets" {
-    count                   = length(data.aws_availability_zones.availability_zones.names)
+    count                   = length(data.aws_availability_zones.available_zones.names)
     cidr_block              = cidrsubnet(var.vpc_cidr_block,8,count.index)
-    vpc_id                  = aws_vpc.backend_nework.id
-    availability_zone       = element(data.aws_availability_zones.availability_zones.names,count.index)
+    vpc_id                  = aws_vpc.backend_network.id
+    availability_zone       = element(data.aws_availability_zones.available_zones.names,count.index)
     map_public_ip_on_launch = true
     tags = {
-        Name  = "Public Subnet - ${element(data.aws_availability_zones.availability_zones.names,count.index)}"
+        Name  = "Public Subnet - ${element(data.aws_availability_zones.available_zones.names,count.index)}"
     }
 
     depends_on =[
@@ -31,12 +31,12 @@ resource "aws_subnet" "public_subnets" {
 }
 
 resource "aws_subnet" "private_subnets" {
-    count  = lenght(data.aws_availability_zones.availability_zones.names)
-    cidr_block  = cidrblock(var.vpc_cidr_block,8,"${10+count.index}")
+    count  = length(data.aws_availability_zones.available_zones.names)
+    cidr_block  = cidrsubnet(var.vpc_cidr_block,8,"${10+count.index}")
     vpc_id      = aws_vpc.backend_network.id
-    availability_zone  = element(data.aws_availability_zones.availability_zones.names,count.index)
+    availability_zone  = element(data.aws_availability_zones.available_zones.names,count.index)
     tags  = {
-        Name  = "Private Subnet - ${element(data.aws_availability_zones.availability_zones.names,count.index)}"
+        Name  = "Private Subnet - ${element(data.aws_availability_zones.available_zones.names,count.index)}"
     }
 
     depends_on = [
@@ -50,7 +50,7 @@ resource "aws_eip" "nat_public_ip"{
     vpc    = true
 
     tags = {
-        Name = "NAt -GW Public IP"
+        Name = "NAT -GW Public IP"
     }
 }
 
