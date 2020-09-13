@@ -1,0 +1,15 @@
+---
+# vars file for mongo_server
+mongo_repo_base_url: "https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/4.4/x86_64/"
+packages_name: ["mongodb-org","python3-pip"]
+mongo_db_root_username: "root"
+mongo_db_root_password: "root"
+mongo_db_root_user_roles: "readWriteAnyDatabase,dbAdminAnyDatabase,clusterAdmin"
+mongo_db_server_port: "27017"
+mongo_db_data_path: "/var/lib/mongo"
+mongo_db_bind_ip: "0.0.0.0"
+mongo_db_conf_location: "/etc/mongod.conf"
+application_username: "appuser"
+application_user_password: "appUser"
+application_user_priviledges: "readWrite"
+application_db_name: "nodejsdemo"

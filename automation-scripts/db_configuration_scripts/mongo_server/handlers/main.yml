@@ -1,0 +1,7 @@
+---
+# handlers file for mongo_server
+- name: restart mongo server
+  systemd:
+    name: mongod
+    state: restarted
+

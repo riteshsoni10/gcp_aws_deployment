@@ -1,0 +1,58 @@
+---
+# tasks file for mongo_server
+- name : "Configure Mongo DB Server Repository"
+  yum_repository:
+    name: "mongo_server"
+    description: "Mongo DB v4.4 Repository"
+    file: mongo_db
+    baseurl: "{{ mongo_repo_base_url }}"
+    gpgcheck: no
+
+
+- name: "Install Mongo server "
+  dnf:
+    name: "{{ packages_name }}"
+    state: latest
+
+- name: "Install python dependencies"
+  pip:
+    executable: pip3
+    name: pymongo
+    state: latest
+
+- name: "Disable SELINUX"
+  selinux:
+    state: disabled
+
+- name: "Start Mongo Server"
+  systemd: 
+    name: mongod
+    state: started
+
+- name: "Create Admin User"
+  mongodb_user:
+    database: "admin"
+    name:     "{{ mongo_db_root_username }}"
+    password: "{{ mongo_db_root_password }}"
+    roles: "{{ mongo_db_root_user_roles }}"
+    login_port: "{{ mongo_db_server_port }}"
+    state: present       
+
+- name: "Uploading the Mongo DB Server Configuration" 
+  template:
+    src: mongo_conf.j2
+    dest: "{{ mongo_db_conf_location }}"
+  notify:
+    - restart mongo server
+
+- name: "Create Application User in DB server"
+  mongodb_user:
+    database: "{{ application_db_name }}"
+    name: "{{ application_username }}"
+    password: "{{ application_user_password }}"
+    roles: "{{ application_user_priviledges }}"
+    login_user: "{{ mongo_db_root_username }}"
+    login_password: "{{ mongo_db_root_password }}"
+    state: present
+
+
