@@ -1,11 +1,11 @@
 resource "null_resource" "upload_db_playbook"{
 	provisioner "file" {
 		source = "db_configuration_scripts"
-		destination = "/opt"
+		destination = "/tmp/"
 	
 		connection {
       			type     = var.connection_type
-      			user     = var.connecion_user
+      			user     = var.connection_user
       			private_key = file(aws_key_pair.bastion_instance_key.key_name)
 			host     = aws_instance.bastion_host.public_ip
     		}
@@ -21,11 +21,11 @@ resource "null_resource" "upload_db_playbook"{
 resource "null_resource" "upload_db_server_key" {
 	provisioner "file" {
                 source = var.db_instance_key_name
-                destination = "/opt"
+                destination = "/tmp/${var.db_instance_key_name}"
 
                 connection {
                         type     = var.connection_type
-                        user     = var.connecion_user
+                        user     = var.connection_user
                         private_key = file(aws_key_pair.bastion_instance_key.key_name)
                         host     = aws_instance.bastion_host.public_ip
                 }
@@ -52,8 +52,9 @@ resource  "null_resource" "mongo_db_configure"{
 
     provisioner remote-exec {
         inline =[
-            "sudo yum install python36 -y",
-	    "ansible-playbook -u ${var.db_connection_user} -i ${var.db_server_private_ip}, --private-key ${var.db_instance_key_name} /opt/deployment_scripts/configuration.yml --ssh-extra-args=\"-o stricthostkeychecking=no\""
+            "sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm -y",
+	    "sudo dnf install ansible -y",
+	    "sudo ansible-playbook -u ${var.db_connection_user} -i ${var.db_server_private_ip}, --private-key /tmp/${var.db_instance_key_name} /tmp/db_configuration_scripts/db_server.yml --ssh-extra-args=\"-o stricthostkeychecking=no\""
         ]
     }
 

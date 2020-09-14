@@ -55,6 +55,7 @@ module "gcp_aws_vpn" {
 module "database_server" {
    source = "./modules/db_server"
    vpc_id             = module.aws_cloud.vpc_id
+   vpc_cidr_block        = var.aws_vpc_cidr_block
    gcp_network_cidr   = var.gcp_subnet_cidr
    ami_id             = var.aws_db_ami_id
    instance_type      = var.aws_db_instance_type
@@ -66,7 +67,6 @@ module "database_server" {
 module "aws_bastion_host" {
   source = "./modules/aws_bastion_host"
   vpc_id                = module.aws_cloud.vpc_id
-  vpc_cidr_block        = var.aws_vpc_cidr_block
   bastion_ami_id        = var.aws_bastion_ami_id
   bastion_instance_type = var.aws_bastion_instance_type
   public_subnet_id      = module.aws_cloud.public_subnet_id
