@@ -4,6 +4,16 @@ aws_vpc_cidr_block = "10.100.0.0/16"
 aws_db_instance_type = "t2.micro"
 aws_db_key_name      = "aws_db_key"
 aws_db_ami_id        = "ami-08369715d30b3f58f"
+aws_bastion_instance_type = "t2.micro"
+aws_bastion_key_name      = "aws_bastion_key"
+aws_bastion_ami_id        = "ami-08369715d30b3f58f"
+aws_connection_type       = "ssh"
+aws_bastion_connection_user = "ec2-user"
+aws_db_server_connection_user      = "ec2-user"
+
+
+
+
 gcp_region_name  = "asia-southeast1"
 gcp_credentials_file_name = "gcp_creds.json"
 gcp_project_id     = "nodejs-frontend-app"

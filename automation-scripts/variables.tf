@@ -32,6 +32,47 @@ variable "aws_db_key_name" {
 	default = "aws_db_key"
 }
 
+
+variable "aws_bastion_ami_id" {
+        type = string
+        description = "Bastion Server AMI Id "
+}
+
+variable "aws_bastion_instance_type" {
+        type = string
+        description = "Database Server Configuration "
+        default = "t2.micro"
+}
+
+variable "aws_bastion_key_name" {
+        type = string
+        description = " Database Server Instance Login Key Name"
+        default = "aws_db_key"
+}
+
+
+
+variable "aws_db_server_connection_user" {
+    type = string
+    description = "The login user for SSH connection in DB Server"
+}
+
+
+variable "aws_bastion_connection_user" {
+    type = string
+    description = "The login user for SSH connection in Bastion Server"
+}
+
+
+variable "aws_connection_type" {
+    type= string
+    description = "Connection type for remote login"
+}
+
+
+
+
+
 ## GCP Variables
 
 variable "gcp_credentials_file_name" {

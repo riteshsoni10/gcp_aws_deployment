@@ -18,12 +18,29 @@ resource "null_resource" "upload_db_playbook"{
 
 }
 
+resource "null_resource" "upload_db_server_key" {
+	provisioner "file" {
+                source = var.db_instance_key_name
+                destination = "/opt"
+
+                connection {
+                        type     = var.connection_type
+                        user     = var.connecion_user
+                        private_key = file(aws_key_pair.bastion_instance_key.key_name)
+                        host     = aws_instance.bastion_host.public_ip
+                }
+        }
+
+
+	depends_on = [
+		null_resource.upload_db_playbook
+	]
+}
 
 
 resource  "null_resource" "mongo_db_configure"{
     depends_on = [
-        aws_instance.bastion_host,
-
+	null_resource.upload_db_server_key
     ]
 
     connection{
@@ -36,7 +53,7 @@ resource  "null_resource" "mongo_db_configure"{
     provisioner remote-exec {
         inline =[
             "sudo yum install python36 -y",
-	    "ansible-playbook -u ${var.db_connection_user} -i ${var.db_server_private_ip}, --private-key ${aws_key_pair.bastion_instance_key.key_name} /opt/deployment_scripts/configuration.yml -e efs_cluster_dns_name=${var.efs_cluster_dns_name} --ssh-extra-args=\"-o stricthostkeychecking=no\""
+	    "ansible-playbook -u ${var.db_connection_user} -i ${var.db_server_private_ip}, --private-key ${var.db_instance_key_name} /opt/deployment_scripts/configuration.yml --ssh-extra-args=\"-o stricthostkeychecking=no\""
         ]
     }
 
