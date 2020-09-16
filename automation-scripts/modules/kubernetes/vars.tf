@@ -3,6 +3,21 @@ variable "mongo_db_port" {
   description = " Database Server Port"
 }
 
+variable "app_image_name" {
+  type = string
+  description = "Application Docker Image Name"
+}
+
+variable "app_container_port" {
+  type = string
+  dscription = " Application Port"
+}
+
+variable "app_port" {
+  type = string
+  description = "Port for application that is exposed by Service"
+}
+
 variable "db_root_username" {
   type = string
   description = "Database Server Admin UserName"
