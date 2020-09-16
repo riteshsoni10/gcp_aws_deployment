@@ -180,3 +180,22 @@ variable "gcp_node_pool_name"{
     type = string
     description = "Node Pool Cluster Name"
 }
+
+
+## Application Server Variables
+
+variable "app_docker_image_name" {
+	type = string
+	description = "Docker Image for the applcation Pods"
+}
+
+variable "app_container_port" {
+	type = string
+	description = "Port Number on which Application is exposed in Image"
+}
+
+variable "app_expose_port" {
+	type = string
+	description = "Port Numer to Expose the Application in Kubernetes Service"
+}
+	
