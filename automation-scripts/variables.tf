@@ -8,12 +8,10 @@ variable "aws_user_profile" {
     description = "AWS IAM Credentials"
 }
 
-
 variable "aws_vpc_cidr_block" {
     type = string
     description = "AWS VPC CIDR Block"
 }
-
 
 variable "aws_db_ami_id" {
 	type = string
@@ -50,19 +48,15 @@ variable "aws_bastion_key_name" {
         default = "aws_db_key"
 }
 
-
-
 variable "aws_db_server_connection_user" {
     type = string
     description = "The login user for SSH connection in DB Server"
 }
 
-
 variable "aws_bastion_connection_user" {
     type = string
     description = "The login user for SSH connection in Bastion Server"
 }
-
 
 variable "aws_connection_type" {
     type= string
@@ -70,7 +64,44 @@ variable "aws_connection_type" {
 }
 
 
+## Database Server Variables
 
+variable "aws_mongo_db_root_username" {
+    type = string
+    description = "The login user for SSH connection"
+}
+
+variable "aws_mongo_db_root_password" {
+    type= string
+    description = "Connection type for remote login"
+}
+
+variable "aws_mongo_db_server_port" {
+	type = string
+	description = "Database Server Private IP"
+}
+
+variable "aws_mongo_db_data_path" {
+	type = string
+	description = "Database Login User"
+
+}
+
+variable "aws_mongo_db_application_username" {
+	type  = string
+	description = "Database Server Key name"
+}
+
+variable "aws_mongo_db_application_user_password" {
+	type = string
+	description = "Database Login User"
+
+}
+
+variable "aws_mongo_db_application_db_name" {
+	type  = string
+	description = "Database Server Key name"
+}
 
 
 ## GCP Variables
