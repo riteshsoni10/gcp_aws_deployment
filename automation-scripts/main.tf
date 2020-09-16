@@ -68,15 +68,23 @@ module "database_server" {
 
 
 module "aws_bastion_host" {
-  source = "./modules/aws_bastion_host"
-  vpc_id                = module.aws_cloud.vpc_id
-  bastion_ami_id        = var.aws_bastion_ami_id
-  bastion_instance_type = var.aws_bastion_instance_type
-  public_subnet_id      = module.aws_cloud.public_subnet_id
-  key_name              = var.aws_bastion_key_name
-  connection_user       = var.aws_bastion_connection_user
-  db_connection_user    = var.aws_db_server_connection_user
-  connection_type       = var.aws_connection_type
-  db_server_private_ip  = module.database_server.db_private_ip
-  db_instance_key_name  = module.database_server.key_name
+  source                             = "./modules/aws_bastion_host"
+  vpc_id                             = module.aws_cloud.vpc_id
+  bastion_ami_id                     = var.aws_bastion_ami_id
+  bastion_instance_type              = var.aws_bastion_instance_type
+  public_subnet_id                   = module.aws_cloud.public_subnet_id
+  key_name                           = var.aws_bastion_key_name
+  connection_user                    = var.aws_bastion_connection_user
+  db_connection_user                 = var.aws_db_server_connection_user
+  connection_type                    = var.aws_connection_type
+  db_server_private_ip               = module.database_server.db_private_ip
+  db_instance_key_name               = module.database_server.key_name
+  mongo_db_root_username             = var.aws_mongo_db_root_username
+  mongo_db_root_password             = var.aws_mongo_db_root_password
+  mongo_db_server_port               = var.aws_mongo_db_server_port
+  mongo_db_data_path                 = var.aws_mongo_db_data_path
+  mongo_db_application_username      = var.aws_mongo_db_application_username
+  mongo_db_application_user_password = var.aws_mongo_db_application_user_password
+  mongo_db_application_db_name       = var.aws_mongo_db_application_db_name    
+  
 }
