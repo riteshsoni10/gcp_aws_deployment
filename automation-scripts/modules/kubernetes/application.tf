@@ -64,7 +64,7 @@ resource "kubernetes_deployment" "app_deployment" {
                     }
                     env {
                         name  = "DATABASE_SERVER"
-                        value =  kubernetes_service.monogo_service.metadata[0].name
+                        value =  var.mongo_db_host
                     }
                     env {
                         name  = "DATABASE_PORT"
