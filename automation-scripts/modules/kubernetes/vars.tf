@@ -1,3 +1,8 @@
+variable "mongo_db_host" {
+  type = string
+  description = "Database Server IP"
+}
+
 variable "mongo_db_port" {
   type = string
   description = " Database Server Port"
