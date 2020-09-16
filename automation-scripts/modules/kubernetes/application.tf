@@ -1,7 +1,7 @@
 
 resource "kubernetes_deployment" "app_deployment" {
     depends_on = [
-        kubernetes_secret.mongo_secret,
+        kubernetes_secret.db_secret,
     ]
     metadata {
         name = "app-deploy"
@@ -39,7 +39,7 @@ resource "kubernetes_deployment" "app_deployment" {
                         name  = "DATABASE_USER"
                         value_from {
                             secret_key_ref {
-                                name = kubernetes_secret.mongo_secret.metadata[0].name
+                                name = kubernetes_secret.db_secret.metadata[0].name
                                 key = "username"
                             }
                         }
@@ -48,7 +48,7 @@ resource "kubernetes_deployment" "app_deployment" {
                         name  = "DATABASE_PASSWORD"
                         value_from {
                             secret_key_ref {
-                                name = kubernetes_secret.mongo_secret.metadata[0].name
+                                name = kubernetes_secret.db_secret.metadata[0].name
                                 key = "password"
                             }
                         }
@@ -57,7 +57,7 @@ resource "kubernetes_deployment" "app_deployment" {
                         name  = "DATABASE"
                         value_from {
                             secret_key_ref {
-                                name = kubernetes_secret.mongo_secret.metadata[0].name
+                                name = kubernetes_secret.db_secret.metadata[0].name
                                 key  = "database"
                             }
                         }

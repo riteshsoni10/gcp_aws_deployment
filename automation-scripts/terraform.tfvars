@@ -12,6 +12,11 @@ aws_connection_type                     = "ssh"
 aws_bastion_connection_user             = "ec2-user"
 aws_db_server_connection_user           = "ec2-user"
 
+## Application Server Input Values
+app_expose_port                         = 80
+app_container_port			= 3000
+app_docker_image_name				= "riteshsoni296/nodejs_app:v1"
+
 ## Database Server Input Values
 aws_mongo_db_root_username              = "root"
 aws_mongo_db_root_password              = "root@123"

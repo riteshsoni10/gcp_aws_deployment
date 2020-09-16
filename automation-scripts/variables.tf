@@ -190,12 +190,12 @@ variable "app_docker_image_name" {
 }
 
 variable "app_container_port" {
-	type = string
+	type = number
 	description = "Port Number on which Application is exposed in Image"
 }
 
 variable "app_expose_port" {
-	type = string
+	type = number
 	description = "Port Numer to Expose the Application in Kubernetes Service"
 }
 	
