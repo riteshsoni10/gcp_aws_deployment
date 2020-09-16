@@ -86,5 +86,17 @@ module "aws_bastion_host" {
   mongo_db_application_username      = var.aws_mongo_db_application_username
   mongo_db_application_user_password = var.aws_mongo_db_application_user_password
   mongo_db_application_db_name       = var.aws_mongo_db_application_db_name    
-  
 }
+
+module "application_deployment" {
+    source              = "./modules/kubernetes"
+    mongo_db_host       = module.database_server.db_private_ip
+    mongo_db_port       = var.aws_mongo_db_server_port
+    app_image_name      = var.app_docker_image_name
+    app_container_port  = var.app_container_port
+    app_port            = var.app_expose_port
+    db_app_username     = var.aws_mongo_db_application_username
+    db_app_password     = var.aws_mongo_db_application_user_password
+    db_database_name    = var.aws_mongo_db_application_db_name 
+}
+      
