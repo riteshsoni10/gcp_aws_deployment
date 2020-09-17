@@ -15,15 +15,15 @@ aws_db_server_connection_user           = "ec2-user"
 ## Application Server Input Values
 app_expose_port                         = 80
 app_container_port			= 3000
-app_docker_image_name				= "riteshsoni296/nodejs_app:v1"
+app_docker_image_name		        = "riteshsoni296/nodejs_app:v1"
 
 ## Database Server Input Values
 aws_mongo_db_root_username              = "root"
-aws_mongo_db_root_password              = "root@123"
+aws_mongo_db_root_password              = "root123"
 aws_mongo_db_server_port                = "27017"
 aws_mongo_db_data_path                  = "/var/lib/mongo"
 aws_mongo_db_application_username       = "appuser"
-aws_mongo_db_application_user_password  = "appUser@123"
+aws_mongo_db_application_user_password  = "appUser123"
 aws_mongo_db_application_db_name        = "nodejsdemo"
 
 ## GCP Cloud Input Values
