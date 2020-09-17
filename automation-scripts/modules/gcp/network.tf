@@ -25,7 +25,7 @@ resource "google_compute_firewall" "ssh_access" {
         ports    = ["22"]
     }
 
-    source_tags = ["ssh-access"]
+    source_ranges = ["0.0.0.0/0"]
 
     depends_on = [
         google_compute_network.app_network

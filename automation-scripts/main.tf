@@ -62,6 +62,7 @@ module "database_server" {
    gcp_network_cidr   = var.gcp_subnet_cidr
    ami_id             = var.aws_db_ami_id
    instance_type      = var.aws_db_instance_type
+   db_port            = var.aws_mongo_db_server_port
    private_subnet_id  = module.aws_cloud.private_subnet_id
    key_name           = var.aws_db_key_name
 }
