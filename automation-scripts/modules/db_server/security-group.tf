@@ -15,8 +15,8 @@ resource "aws_security_group" "db_server_security_group" {
 	
 	ingress {
 		protocol = "tcp"
-		from_port = 3306
-		to_port = 3306
+		from_port = var.db_port
+		to_port =   var.db_port
 		cidr_blocks = [var.gcp_network_cidr]
 		description = "Mysql Server Access from GCP Cloud "
 	}

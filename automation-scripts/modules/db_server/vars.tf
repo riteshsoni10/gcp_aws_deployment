@@ -10,6 +10,11 @@ variable "vpc_cidr_block" {
 
 }
 
+variable "db_port" {
+	type = number
+	description = "Database Port Number"
+}
+
 variable "gcp_network_cidr" {
 	type = string
 	description = "Google Cloud Network CIDR"
