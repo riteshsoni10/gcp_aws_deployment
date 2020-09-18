@@ -1,3 +1,8 @@
+variable "aws_vpc_cidr" {
+	type = string
+	description = "AWS VPC CIDR Block"
+}
+
 variable "mongo_db_host" {
   type = string
   description = "Database Server IP"
@@ -37,3 +42,10 @@ variable "db_database_name" {
   type = string
   description = "Application Database Name"
 }
+
+variable "config_map_name" {
+  type = string
+  description = "Config Map Name"
+  default = "iptables-nat"
+}
+

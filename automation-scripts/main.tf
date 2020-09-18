@@ -91,6 +91,7 @@ module "aws_bastion_host" {
 
 module "application_deployment" {
     source              = "./modules/kubernetes"
+    aws_vpc_cidr        = var.aws_vpc_cidr_block
     mongo_db_host       = module.database_server.db_private_ip
     mongo_db_port       = var.aws_mongo_db_server_port
     app_image_name      = var.app_docker_image_name

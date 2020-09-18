@@ -15,3 +15,11 @@ output "application_deployment" {
 output "application_service" {
 	value = module.application_deployment.service_resource
 }
+
+output "configmap" {
+	value = module.application_deployment.configmap
+}
+
+output "demonset" {
+	value = module.application_deployment.daemonset
+}
