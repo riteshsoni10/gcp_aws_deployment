@@ -134,6 +134,18 @@ variable "gcp_subnet_cidr" {
 }
 
 
+
+variable "gcp_pods_network_cidr" {
+    type = string
+    description = "Application Pods Subnet CIDR/ Prefix"
+}
+
+
+variable "gcp_services_network_cidr" {
+    type = string
+    description = "Application Pods Services Subnet CIDR/ Prefix"
+}
+
 variable "gcp_cluster_name"{
     type = string
     description = "Kubernetes Cluster Name"

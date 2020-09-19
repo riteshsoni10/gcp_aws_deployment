@@ -26,18 +26,20 @@ provider "kubernetes" {
 
 
 module "gcp_cloud" {
-    source = "./modules/gcp"
-    subnet_cidr = var.gcp_subnet_cidr
-    network_name = var.gcp_network_name
-    cluster_name = var.gcp_cluster_name
-    cluster_zone = var.gcp_cluster_zone
-    load_balancing_state = var.gcp_load_balancing_state
-    node_count = var.gcp_node_count
-    node_disk_size  = var.gcp_node_disk_size
+    source                 = "./modules/gcp"
+    subnet_cidr            = var.gcp_subnet_cidr
+    pods_network_cidr      = var.gcp_pods_network_cidr
+    services_network_cidr  = var.gcp_services_network_cidr
+    network_name           = var.gcp_network_name
+    cluster_name           = var.gcp_cluster_name
+    cluster_zone           = var.gcp_cluster_zone
+    load_balancing_state   = var.gcp_load_balancing_state
+    node_count             = var.gcp_node_count
+    node_disk_size         = var.gcp_node_disk_size
     node_preemptible_state = var.gcp_node_preemptible_state
-    node_machine_type = var.gcp_node_machine_type
-    pod_scaling_state = var.gcp_pod_scaling_state
-    node_pool_name = var.gcp_node_pool_name
+    node_machine_type      = var.gcp_node_machine_type
+    pod_scaling_state      = var.gcp_pod_scaling_state
+    node_pool_name         = var.gcp_node_pool_name
 }
 
 
@@ -59,7 +61,7 @@ module "database_server" {
    source = "./modules/db_server"
    vpc_id             = module.aws_cloud.vpc_id
    vpc_cidr_block        = var.aws_vpc_cidr_block
-   gcp_network_cidr   = var.gcp_subnet_cidr
+   gcp_network_cidrs   = [var.gcp_subnet_cidr,var.gcp_pods_network_cidr,var.gcp_services_network_cidr]
    ami_id             = var.aws_db_ami_id
    instance_type      = var.aws_db_instance_type
    db_port            = var.aws_mongo_db_server_port

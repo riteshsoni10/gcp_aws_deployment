@@ -16,6 +16,17 @@ variable "subnet_cidr" {
 }
 
 
+variable "pods_network_cidr" {
+    type = string
+    description = "Application Pods Subnet CIDR/ Prefix"
+}
+
+
+variable "services_network_cidr" {
+    type = string
+    description = "Application Services Subnet CIDR/ Prefix"
+}
+
 
 variable "cluster_name"{
     type = string
