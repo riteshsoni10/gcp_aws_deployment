@@ -1,14 +1,4 @@
-output "service_resource" {
-	value = kubernetes_service.app_service
+output "service_endpoint" {
+	value = kubernetes_service.app_service.load_balancer_ingress.0.ip
 }
 
-output "deployment_resource" {
-	value = kubernetes_deployment.app_deployment
-}
-output "configmap" {
-	value = kubernetes_config_map.iptables_nat_startup_script
-}
-
-output "daemonset" {
-	value = kubernetes_daemonset.gke_vpn_nat_aws_cidr 
-}

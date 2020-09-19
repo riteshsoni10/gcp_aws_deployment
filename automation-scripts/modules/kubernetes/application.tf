@@ -2,7 +2,7 @@
 resource "kubernetes_deployment" "app_deployment" {
     depends_on = [
         kubernetes_secret.db_secret,
-	kubernetes_daemonset.gke_vpn_nat_aws_cidr,
+	#kubernetes_daemonset.gke_vpn_nat_aws_cidr,
     ]
     metadata {
         name = "app-deploy"

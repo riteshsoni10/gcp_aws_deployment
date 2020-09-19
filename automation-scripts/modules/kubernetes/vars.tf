@@ -43,9 +43,4 @@ variable "db_database_name" {
   description = "Application Database Name"
 }
 
-variable "config_map_name" {
-  type = string
-  description = "Config Map Name"
-  default = "iptables-nat"
-}
 
