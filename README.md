@@ -95,7 +95,7 @@ The project resource is created manually since creation of `Organisation` in `Go
 3. Enter the project details
 
 <p align="center">
-  <img src="/screenshots/gcp_project_creation.png" width="950" title="GCP Project">
+  <img src="/screenshots/gcp_project_creation.png" width="550" title="GCP Project">
   <br>
   <em>Fig 7.: Project detais in GCP </em>
 </p>
@@ -108,7 +108,7 @@ The resource manager api is to be enabled to create the resource in Google Cloud
 1. Click on top left menu button and Select **Library** in **API and Services**
 
 <p align="center">
-  <img src="/screenshots/gcp_api_enable.png" width="950" title="GCP API Lbrary">
+  <img src="/screenshots/gcp_api_enable.png" width="450" title="GCP API Lbrary">
   <br>
   <em>Fig 8.: API Library </em>
 </p>
@@ -119,7 +119,7 @@ The resource manager api is to be enabled to create the resource in Google Cloud
 <p align="center">
   <img src="/screenshots/gcp_enable_crm.png" width="950" title="GCP API Lbrary">
   <br>
-  <em>Fig 8.: Cloud Resource API </em>
+  <em>Fig 9.: Cloud Resource API </em>
 </p>
 
 
@@ -132,7 +132,7 @@ Creating a service account is similar to adding a member to your project, but th
 <p align="center">
   <img src="/screenshots/gcp_sa.png" width="950" title="GCP Service Account">
   <br>
-  <em>Fig 9.: Service Account </em>
+  <em>Fig 10.: Service Account </em>
 </p>
 
 2 Enter the service account details
@@ -140,7 +140,7 @@ Creating a service account is similar to adding a member to your project, but th
 <p align="center">
   <img src="/screenshots/gcp_sa_create.png" width="950" title="GCP Service Account Details">
   <br>
-  <em>Fig 10.: Service Account Details </em>
+  <em>Fig 11.: Service Account Details </em>
 </p>
 
 3. Grant Privileges to the Service Account
@@ -148,7 +148,7 @@ Creating a service account is similar to adding a member to your project, but th
 <p align="center">
   <img src="/screenshots/gcp_sa_permissions.png" width="950" title="GCP Service Account Permissions">
   <br>
-  <em>Fig 11.: Service Account Privileges </em>
+  <em>Fig 12.: Service Account Privileges </em>
 </p>
 
 4. Then, click on Continue
@@ -159,7 +159,7 @@ Creating a service account is similar to adding a member to your project, but th
 <p align="center">
   <img src="/screenshots/gcp_sa_created.png" width="950" title="GCP Service Account ">
   <br>
-  <em>Fig 11.: Service Account </em>
+  <em>Fig 13.: Service Account </em>
 </p>
 
 6. Create **New Access Key**
@@ -167,7 +167,7 @@ Creating a service account is similar to adding a member to your project, but th
 <p align="center">
   <img src="/screenshots/gcp_sa_key_generate.png" width="950" title="GCP Service Account Access Key">
   <br>
-  <em>Fig 12.: Generate Service Account Access Key</em>
+  <em>Fig 14.: Generate Service Account Access Key</em>
 </p>
 
 7. Select the **Key Type**  and click on **Create**
@@ -177,7 +177,7 @@ Creating a service account is similar to adding a member to your project, but th
 <p align="center">
   <img src="/screenshots/gcp_sa_key_json.png" width="950" title="GCP Service Account">
   <br>
-  <em>Fig 13.: Download Access Key </em>
+  <em>Fig 15.: Download Access Key </em>
 </p>
   
 
@@ -190,14 +190,14 @@ terraform init
 <p align="center">
   <img src="/screenshots/terraform_initialise.png" width="950" title="Initialising Terraform">
   <br>
-  <em>Fig 14.: Initialisng Terraform </em>
+  <em>Fig 16.: Initialisng Terraform </em>
 </p>
 
 
 Each Task is distributed into `modules` and located in *automation_scripts/modules* directory i.e 
 - AWS Infrastructure
-- AWS Bastion Host
 - Database Server in AWS
+- AWS Bastion Host
 - Database Server Configuration
 - Kubernetes Cluster in GCP using GKE
 - Application Deployment
@@ -253,7 +253,7 @@ resource "aws_vpc" "backend_network" {
 <p align="center">
   <img src="/screenshots/vpc_network.png" width="950" title=" AWS VPC">
   <br>
-  <em>Fig 15.: AWS VPC </em>
+  <em>Fig 17.: AWS VPC </em>
 </p>
 
 
@@ -266,10 +266,8 @@ terraform validate
 <p align="center">
   <img src="/screenshots/terraform_validate.png" width="950" title="Syntax Validation">
   <br>
-  <em>Fig 16.: Terraform Validate </em>
+  <em>Fig 18.: Terraform Validate </em>
 </p>
-
-
 
 
 ### AWS Public and Private Subnets
@@ -323,7 +321,7 @@ cidrsubnet(iprange, newbits, netnum) where:
 <p align="center">
   <img src="/screenshots/public_private_subnets.png" width="950" title="AWS Subnets">
   <br>
-  <em>Fig 17.: Plan: Public and Private Subnets </em>
+  <em>Fig 19.: Plan: Public and Private Subnets </em>
 </p>
 
 
@@ -369,8 +367,9 @@ resource "aws_nat_gateway" "nat_gw" {
 <p align="center">
   <img src="/screenshots/nat_gw.png" width="950" title="AWS NAT">
   <br>
-  <em>Fig 18.: Plan: NAT Gateway </em>
+  <em>Fig 20.: Plan: NAT Gateway </em>
 </p>
+
 
 ### Public and Private Route Table
 
@@ -414,5 +413,136 @@ resource "aws_route_table" "private_route_table" {
 <p align="center">
   <img src="/screenshots/public_private_route_table.png" width="950" title="AWS Route Tables">
   <br>
-  <em>Fig 19.: Plan: Route Tables </em>
+  <em>Fig 21.: Plan: Route Tables </em>
 </p>
+
+
+## Module : db_server
+
+The module launches the Database Server instance in Private Subnet. The HCL Code for the module invocation is as follows :
+
+```tf
+module "database_server" {
+   source             = "./modules/db_server"
+   vpc_id             = module.aws_cloud.vpc_id
+   vpc_cidr_block     = var.aws_vpc_cidr_block
+   gcp_network_cidrs  = [var.gcp_subnet_cidr,var.gcp_pods_network_cidr,var.gcp_services_network_cidr]
+   ami_id             = var.aws_db_ami_id
+   instance_type      = var.aws_db_instance_type
+   db_port            = var.aws_mongo_db_server_port
+   private_subnet_id  = module.aws_cloud.private_subnets[0]
+   key_name           = var.aws_db_key_name
+}
+```
+
+> Paramaters:
+>
+> aws_vpc_cidr_block => VPC CIDR Block to enable SSH from instances in network
+>
+> gcp_network_cidrs  => Allow Database Server port to be accessed by GCP cloud resources
+
+
+### Create Key Pair
+
+The Public-private Key is generated using `tls_private_key` resource and uploaded to the AWS using `aws_key_pair`. The SSH login Key is stored in `automation_scripts` directory.
+
+<p align="center">
+  <img src="/screenshots/db_instance_key_tls.png" width="950" title="SSH-Keygen SSH Key Pair">
+  <br>
+  <em>Fig 22.: SSH Key Generation </em>
+</p>
+
+
+HCL Code to create Instance Key-Pair
+```tf
+#Creating AWS Key Pair for EC2 Instance Login
+resource "aws_key_pair" "upload_db_instance_key" {
+        key_name = var.key_name
+        public_key = tls_private_key.db_instance_key.public_key_openssh
+        depends_on = [
+                tls_private_key.db_instance_key
+        ]
+}
+```
+ 
+<p align="center">
+  <img src="/screenshots/db_instance_key.png" width="950" title="Create Key Pair">
+  <br>
+  <em>Fig 23.: Create Key Pair </em>
+</p>
+
+ 
+ ### Create Security Groups
+ 
+The SSH access and Database Server Port Access is allowed to database server instance from VPC Network and GCP Cloud Network respectively.
+ 
+ ```tf
+resource "aws_security_group" "db_server_security_group" {
+        name = "allow_ssh_mysql_access"
+        description = "Mysql Server Access from GCP and SSH from VPC Network"
+        vpc_id     = var.vpc_id
+        ingress {
+                protocol = "tcp"
+                from_port = 22
+                to_port = 22
+                cidr_blocks = [var.vpc_cidr_block]
+                description = "SSH Access"
+        }
+        ingress {
+                protocol = "tcp"
+                from_port = var.db_port
+                to_port =   var.db_port
+                cidr_blocks = var.gcp_network_cidrs
+                description = "Mysql Server Access from GCP Cloud "
+        }
+        egress {
+                protocol = -1
+                from_port = 0
+                to_port = 0
+                cidr_blocks = ["0.0.0.0/0"]
+        }
+        tags = {
+                Name = "Database SG"
+        }
+}
+```
+
+
+### Launch Database Server instance
+
+We are going to launch the Database Server EC2 instance with the Key and security group generated above. For now, we will be using the RedHat Enterprise Linux 8.2 i.e `ami-08369715d30b3f58f`. The Official Redhat Enterprise Linux AMI Ids can be found out using the aws cli as below
+
+```sh
+aws ec2 describe-images --owners 309956199498 --query 'sort_by(Images, &CreationDate)[*].[CreationDate,Name,ImageId]'\
+--filters "Name=name,Values=RHEL-8*" --region ap-southeast-1 --output table --profile aws_terraform_user
+```
+
+The HCL Code for EC2 instance resource is as shown below:
+
+```tf
+#Creating EC2 instance for Database Server
+resource "aws_instance" "db_server" {
+        ami           = var.ami_id
+        instance_type = var.instance_type
+        subnet_id     = var.private_subnet_id
+        vpc_security_group_ids = [aws_security_group.db_server_security_group.id]
+        key_name               = aws_key_pair.upload_db_instance_key.key_name
+        tags = {
+                Name = "db-server"
+        }
+        depends_on = [
+                aws_security_group.db_server_security_group,
+                aws_key_pair.upload_db_instance_key,
+        ]
+}
+```
+
+ 
+<p align="center">
+  <img src="/screenshots/db_instance.png" width="950" title="Create EC2 instance">
+  <br>
+  <em>Fig 24.: Launching EC2 instance </em>
+</p>
+
+
+## Module : aws_bastion_host
