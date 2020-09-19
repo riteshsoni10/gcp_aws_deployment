@@ -65,7 +65,7 @@ module "database_server" {
    ami_id             = var.aws_db_ami_id
    instance_type      = var.aws_db_instance_type
    db_port            = var.aws_mongo_db_server_port
-   private_subnet_id  = module.aws_cloud.private_subnet_id
+   private_subnet_id  = module.aws_cloud.private_subnets[0]
    key_name           = var.aws_db_key_name
 }
 
@@ -75,7 +75,7 @@ module "aws_bastion_host" {
   vpc_id                             = module.aws_cloud.vpc_id
   bastion_ami_id                     = var.aws_bastion_ami_id
   bastion_instance_type              = var.aws_bastion_instance_type
-  public_subnet_id                   = module.aws_cloud.public_subnet_id
+  public_subnet_id                   = module.aws_cloud.public_subnets[0]
   key_name                           = var.aws_bastion_key_name
   connection_user                    = var.aws_bastion_connection_user
   db_connection_user                 = var.aws_db_server_connection_user
