@@ -44,7 +44,7 @@ module "gcp_cloud" {
 
 
 module "aws_cloud" {
-    source = "./modules/aws"
+    source = "./modules/aws_network"
     vpc_cidr_block = var.aws_vpc_cidr_block
 }
 
