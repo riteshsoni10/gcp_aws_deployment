@@ -13,3 +13,7 @@ output "gke_config" {
 output "network_id" {
     value = google_compute_network.app_network.id
 }
+
+output "worker_node_public_ips" {
+	value = google_container_node_pool.kubernetes_node_pool
+}
