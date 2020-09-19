@@ -4,17 +4,12 @@ resource "null_resource" "upload_db_playbook"{
 		destination = "/tmp/"
 	
 		connection {
-      			type     = var.connection_type
-      			user     = var.connection_user
-      			private_key = file(aws_key_pair.bastion_instance_key.key_name)
-			host     = aws_instance.bastion_host.public_ip
+      			type        = var.connection_type
+      			user        = var.connection_user
+      			private_key = file(var.bastion_host_key_name)
+			host        = var.bastion_host_public_ip
     		}
 	}
-
-	depends_on = [
-		aws_instance.bastion_host,
-	]
-
 
 }
 
@@ -26,8 +21,8 @@ resource "null_resource" "upload_db_server_key" {
                 connection {
                         type     = var.connection_type
                         user     = var.connection_user
-                        private_key = file(aws_key_pair.bastion_instance_key.key_name)
-                        host     = aws_instance.bastion_host.public_ip
+                        private_key = file(var.bastion_host_key_name)
+                        host     = var.bastion_host_public_ip
                 }
         }
 
@@ -45,9 +40,9 @@ resource  "null_resource" "mongo_db_configure"{
 
     connection{
         type = var.connection_type
-        host = aws_instance.bastion_host.public_ip
+        host = var.bastion_host_public_ip
         user  = var.connection_user
-        private_key = file(aws_key_pair.bastion_instance_key.key_name)
+        private_key = file(var.bastion_host_key_name)
     }
 
     provisioner remote-exec {

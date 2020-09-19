@@ -77,9 +77,15 @@ module "aws_bastion_host" {
   bastion_instance_type              = var.aws_bastion_instance_type
   public_subnet_id                   = module.aws_cloud.public_subnets[0]
   key_name                           = var.aws_bastion_key_name
+}
+
+module "db_server_configure" {
+  source = "./modules/db_configure"
   connection_user                    = var.aws_bastion_connection_user
   db_connection_user                 = var.aws_db_server_connection_user
   connection_type                    = var.aws_connection_type
+  bastion_host_public_ip             = module.aws_bastion_host.public_ip
+  bastion_host_key_name              = module.aws_bastion_host.key_name 
   db_server_private_ip               = module.database_server.db_private_ip
   db_instance_key_name               = module.database_server.key_name
   mongo_db_root_username             = var.aws_mongo_db_root_username
@@ -88,7 +94,8 @@ module "aws_bastion_host" {
   mongo_db_data_path                 = var.aws_mongo_db_data_path
   mongo_db_application_username      = var.aws_mongo_db_application_username
   mongo_db_application_user_password = var.aws_mongo_db_application_user_password
-  mongo_db_application_db_name       = var.aws_mongo_db_application_db_name    
+  mongo_db_application_db_name       = var.aws_mongo_db_application_db_name
+
 }
 
 module "application_deployment" {
