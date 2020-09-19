@@ -15,8 +15,8 @@ variable "db_port" {
 	description = "Database Port Number"
 }
 
-variable "gcp_network_cidr" {
-	type = string
+variable "gcp_network_cidrs" {
+	type = list(string)
 	description = "Google Cloud Network CIDR"
 }
 

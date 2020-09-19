@@ -11,6 +11,10 @@ resource "google_container_cluster" "kubernetes_cluster" {
         }
     }
 
+    ip_allocation_policy {
+	cluster_ipv4_cidr_block = var.pods_network_cidr
+	services_ipv4_cidr_block = var.services_network_cidr
+    }
     remove_default_node_pool = true
     initial_node_count = var.node_count
     network = google_compute_network.app_network.name
