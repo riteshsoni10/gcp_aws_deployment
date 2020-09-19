@@ -15,52 +15,52 @@ A description of the settable variables for this role should go here, including 
 
 **mongo_repo_base_url:**
 
-  Mongo Repository URL like  "https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/4.4/x86_64/"
+    Mongo Repository URL like  "https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/4.4/x86_64/"
 
 **packages_name:** 
 
-  List of packages to be installed in database server i.e ["mongodb-org","python3-pip"]
+    List of packages to be installed in database server i.e ["mongodb-org","python3-pip"]
 
 **mongo_db_root_username:**
 
-  Database Admin Username i.e "root"
+    Database Admin Username i.e "root"
 
 **mongo_db_root_password:**
 
-  Database admin user password;
+    Database admin user password;
   
 **mongo_db_root_user_roles:**
 
-  Database admin user priviledges like "readWriteAnyDatabase,dbAdminAnyDatabase,clusterAdmin"
+    Database admin user priviledges like "readWriteAnyDatabase,dbAdminAnyDatabase,clusterAdmin"
   
 **mongo_db_server_port:**
 
-  Database server port like "27017"
+    Database server port like "27017"
 
 **mongo_db_data_path:**
 
-  Datbase DB storage path like "/var/lib/mongo"
+    Datbase DB storage path like "/var/lib/mongo"
 
 **mongo_db_bind_ip:**
 
-  Database server bind ip like "0.0.0.0"
+    Database server bind ip like "0.0.0.0"
   
 **mongo_db_conf_location:** 
 
-  Database server default configuration file => "/etc/mongod.conf"
+    Database server default configuration file => "/etc/mongod.conf"
 
 **application_username:**
 
-  Database application user name like  "appuser"
+    Database application user name like  "appuser"
 
 **application_user_password:**
 
-  Database application user password.
+    Database application user password.
   
 **application_user_priviledges:**
 
-  Application user priviledges such as "readWrite"
+    Application user priviledges such as "readWrite"
 
 **application_db_name:**
 
-  Application Database Name 
+    Application Database Name 
