@@ -251,7 +251,7 @@ resource "aws_vpc" "backend_network" {
 > cidr_block => VPC CIDR block
 
 <p align="center">
-  <img src="/screenshots/vpc_network.png" width="950" title=" AWS VPC">
+  <img src="/screenshots/vpc_network.png" width="750" title=" AWS VPC">
   <br>
   <em>Fig 17.: AWS VPC </em>
 </p>
@@ -365,7 +365,7 @@ resource "aws_nat_gateway" "nat_gw" {
 
 
 <p align="center">
-  <img src="/screenshots/nat_gw.png" width="950" title="AWS NAT">
+  <img src="/screenshots/nat_gw.png" width="750" title="AWS NAT">
   <br>
   <em>Fig 20.: Plan: NAT Gateway </em>
 </p>
@@ -588,22 +588,26 @@ module "db_server_configure" {
 
 > Parameters:
 >
-> aws_bastion_connection_user => Username for remote connection to bastion host
+> aws_bastion_connection_user           => Username for remote connection to bastion host
 >
-> aws_db_server_connection_user => Username for remote connection to database server
+> aws_db_server_connection_user          => Username for remote connection to database server
 >
-> aws_connection_type           => Connection type for remote connection to instances
+> aws_connection_type                    => Connection type for remote connection to instances
 >
-> aws_mongo_db_root_username    => Database admin username
+> aws_mongo_db_root_username             => Database admin username
 >
-> aws_mongo_db_root_password    => Database admin user password
+> aws_mongo_db_root_password             => Database admin user password
 >
-> aws_mongo_db_server_port      => Database server port
+> aws_mongo_db_server_port               => Database server port
 >
-> aws_mongo_db_data_path        => Database data directory path
+> aws_mongo_db_data_path                 => Database data directory path
 >
 > aws_mongo_db_application_username      => Database Application user
 >
 > aws_mongo_db_application_user_password => Database Application user password
 >
 > aws_mongo_db_application_db_name       => Application database name
+
+
+## Module : gcp
+
