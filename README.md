@@ -2,12 +2,13 @@
 
 The project is utilises resources hosted in *two public Clouds* i.e; `Google Cloud Platform and Amazon Public Cloud`.The *application* is deployed in Kubernetes cluster managed by `Google Kubernetes Engine` provisioned and configured with the help of terraform. The *Database Server* is hosted in AWS Public cloud. The inter-connectivity between the public clouds is preformed using `Site-To-Site VPN`.
 
-
+**Project Flow**
 <p align="center">
   <img src="/screenshots/infra_flow.jpg" width="950" title="Infrastructure Flow">
   <br>
   <em>Fig 1.: Project Flow Diagram </em>
 </p>
+
 
 ## Scope of Project
 
@@ -1049,6 +1050,16 @@ You should have configured IAM profile in the controller node by following instr
 
 5. Then, `terraform apply -auto-approve`
 
+
+In case, you would like to deploy applications using `kubectl` cli on GKE cluster; so `gcloud SDK` is necessary for kubectl configuration. For example:
+
+```sh
+gcloud container clusters get-credentials kubernetes-cluster --region asia-southeast1 --project nodejs-frontend-app
+```
+
+The above command will configure the kubectl cli and you can now connect to the GKE cluster from the local node
+
+
 When you are done playing
 ```sh
 terraform destroy -auto-approve
@@ -1059,6 +1070,7 @@ terraform destroy -auto-approve
   <br>
   <em>Fig 35.: Terraform Output </em>
 </p>
+
 
 
 ## Inputs
@@ -1119,4 +1131,72 @@ terraform destroy -auto-approve
 | database_server_private_ip | Private IPs of Database Server EC instance |
 | database_server_key_name | Key Pair Name used during launching Database Server EC2 instance |
 | application_endpoint | Public IP of Load Balancer for Accessing Application |
+
+
+## Screenshots
+
+**1. Google Cloud Network**
+
+<p align="center">
+  <img src="/screenshots/gcp_console_vpc.png" width="950" title="GCP VPC">
+  <br>
+  <em>Fig 36.: GCP Network </em>
+</p>
+
+**2. Kubernetes Cluster**
+
+<p align="center">
+  <img src="/screenshots/gke_console_cluster.png" width="950" title="GKE Cluster">
+  <br>
+  <em>Fig 37.: GKE Cluster </em>
+</p>
+
+**3. Kubernetes Worker Nodes**
+
+<p align="center">
+  <img src="/screenshots/gke_console_worker_nodes.png" width="950" title="Worker Nodes">
+  <br>
+  <em>Fig 38.: GKE Cluster Worker Nodes </em>
+</p>
+
+**4. Google Cloud VPN
+
+<p align="center">
+  <img src="/screenshots/gcp_console_vpn.png" width="950" title="VPN">
+  <br>
+  <em>Fig 39.: GCP VPN </em>
+</p>
+
+**5.  AWS VPC Network
+
+<p align="center">
+  <img src="/screenshots/aws_console_vpc.png" width="950" title="AWS VPC">
+  <br>
+  <em>Fig 40.: AWS VPC </em>
+</p>
+
+**6. AWS Subnets 
+
+<p align="center">
+  <img src="/screenshots/aws_console_subnets.png" width="950" title="AWS Subnets">
+  <br>
+  <em>Fig 41.: AWS Subnets </em>
+</p>
+
+**7. AWS VPN**
+
+<p align="center">
+  <img src="/screenshots/aws_console_vpn.png" width="950" title="AWS VPN">
+  <br>
+  <em>Fig 42.: AWS VPN </em>
+</p>
+
+**8. Bastion and DB Server Instances**
+
+<p align="center">
+  <img src="/screenshots/aws_console_instances.png" width="950" title="AWS Instances">
+  <br>
+  <em>Fig 43.: AWS Instances </em>
+</p>
+
 
