@@ -68,12 +68,12 @@ variable "aws_connection_type" {
 
 variable "aws_mongo_db_root_username" {
     type = string
-    description = "The login user for SSH connection"
+    description = "Database Server Admin Username"
 }
 
 variable "aws_mongo_db_root_password" {
     type= string
-    description = "Connection type for remote login"
+    description = " Database server Admin User Password "
 }
 
 variable "aws_mongo_db_server_port" {
@@ -83,24 +83,23 @@ variable "aws_mongo_db_server_port" {
 
 variable "aws_mongo_db_data_path" {
 	type = string
-	description = "Database Login User"
-
+	description = "Database Server Data directory"
 }
 
 variable "aws_mongo_db_application_username" {
 	type  = string
-	description = "Database Server Key name"
+	description = "Database Application Username"
 }
 
 variable "aws_mongo_db_application_user_password" {
 	type = string
-	description = "Database Login User"
+	description = "Database Application User Password"
 
 }
 
 variable "aws_mongo_db_application_db_name" {
 	type  = string
-	description = "Database Server Key name"
+	description = "Database Name"
 }
 
 
