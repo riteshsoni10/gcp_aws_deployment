@@ -1,6 +1,6 @@
 # Multi-Cloud Application Deployment (GCP and AWS)
 
-The project is utilises resources hosted in *two public Clouds* i.e; `Google Cloud Platform and Amazon Public Cloud`.The *application* is deployed in Kubernetes cluster managed by `Google Kubernetes Engine` provisioned and configured with the help of terraform. The *Database Server* is hosted in AWS Public cloud. The inter-connectivity between the public clouds is preformed using Site-To-Site VPN.
+The project is utilises resources hosted in *two public Clouds* i.e; `Google Cloud Platform and Amazon Public Cloud`.The *application* is deployed in Kubernetes cluster managed by `Google Kubernetes Engine` provisioned and configured with the help of terraform. The *Database Server* is hosted in AWS Public cloud. The inter-connectivity between the public clouds is preformed using `Site-To-Site VPN`.
 
 
 <p align="center">
@@ -449,7 +449,7 @@ The Public-private Key is generated using `tls_private_key` resource and uploade
 <p align="center">
   <img src="/screenshots/db_instance_key_tls.png" width="950" title="SSH-Keygen SSH Key Pair">
   <br>
-  <em>Fig 22.: SSH Key Generation </em>
+  <em>Fig 22.: Plan: SSH Key Generation </em>
 </p>
 
 
@@ -468,7 +468,7 @@ resource "aws_key_pair" "upload_db_instance_key" {
 <p align="center">
   <img src="/screenshots/db_instance_key.png" width="950" title="Create Key Pair">
   <br>
-  <em>Fig 23.: Create Key Pair </em>
+  <em>Fig 23.: Plan: Create Key Pair </em>
 </p>
 
  
@@ -513,7 +513,8 @@ resource "aws_security_group" "db_server_security_group" {
 We are going to launch the Database Server EC2 instance with the Key and security group generated above. For now, we will be using the RedHat Enterprise Linux 8.2 i.e `ami-08369715d30b3f58f`. The Official Redhat Enterprise Linux AMI Ids can be found out using the aws cli as below
 
 ```sh
-aws ec2 describe-images --owners 309956199498 --query 'sort_by(Images, &CreationDate)[*].[CreationDate,Name,ImageId]'\
+aws ec2 describe-images --owners 309956199498 \
+--query 'sort_by(Images, &CreationDate)[*].[CreationDate,Name,ImageId]' \
 --filters "Name=name,Values=RHEL-8*" --region ap-southeast-1 --output table --profile aws_terraform_user
 ```
 
@@ -536,12 +537,11 @@ resource "aws_instance" "db_server" {
         ]
 }
 ```
-
  
 <p align="center">
   <img src="/screenshots/db_instance.png" width="950" title="Create EC2 instance">
   <br>
-  <em>Fig 24.: Launching EC2 instance </em>
+  <em>Fig 24.: Plan: Launching EC2 instance </em>
 </p>
 
 
@@ -586,28 +586,211 @@ module "db_server_configure" {
 }
 ```
 
-> Parameters:
->
-> aws_bastion_connection_user           => Username for remote connection to bastion host
->
-> aws_db_server_connection_user          => Username for remote connection to database server
->
-> aws_connection_type                    => Connection type for remote connection to instances
->
-> aws_mongo_db_root_username             => Database admin username
->
-> aws_mongo_db_root_password             => Database admin user password
->
-> aws_mongo_db_server_port               => Database server port
->
-> aws_mongo_db_data_path                 => Database data directory path
->
-> aws_mongo_db_application_username      => Database Application user
->
-> aws_mongo_db_application_user_password => Database Application user password
->
-> aws_mongo_db_application_db_name       => Application database name
-
 
 ## Module : gcp
+
+The module is responsible to configure custom network, subnets, vpn tunnels and provision `Google Kubernetes Engine` Cluster in `Google Cloud Platform`.
+
+```tf
+module "gcp_cloud" {
+    source                 = "./modules/gcp"
+    subnet_cidr            = var.gcp_subnet_cidr
+    pods_network_cidr      = var.gcp_pods_network_cidr
+    services_network_cidr  = var.gcp_services_network_cidr
+    network_name           = var.gcp_network_name
+    cluster_name           = var.gcp_cluster_name
+    cluster_zone           = var.gcp_cluster_zone
+    load_balancing_state   = var.gcp_load_balancing_state
+    node_count             = var.gcp_node_count
+    node_disk_size         = var.gcp_node_disk_size
+    node_preemptible_state = var.gcp_node_preemptible_state
+    node_machine_type      = var.gcp_node_machine_type
+    pod_scaling_state      = var.gcp_pod_scaling_state
+    node_pool_name         = var.gcp_node_pool_name
+}
+```
+
+
+### Enable Google Cloud APIs
+
+The Google Cloud APIs for Compute Engine and Kubernetes Engine are required to luanch the respective resources. The HCL is code as follows:
+
+```tf
+resource "google_project_service" "gke_api_enable" {
+    service             = "container.googleapis.com"
+    disable_on_destroy  = false
+}
+resource "google_project_service" "compute_engine_api_enable" {
+    service             = "compute.googleapis.com"
+    disable_on_destroy  = false
+```
+
+<p align="center">
+  <img src="/screenshots/gcp_compute_api_enable.png" width="950" title="Google CLoud API Enable">
+  <br>
+  <em>Fig 25.: Google Cloud API Enable</em>
+</p>
+
+
+## Google Cloud Network and Subnets
+
+The custom network resource in Google Cloud is created. In GCP, the zones and subnets are defined differently as compared to the AWS Cloud. In AWS Cloud a subnet can resides only in one Availability zone whereas in GCP, the subnets can span in multiple_zones.
+
+HCL code to create Virtual network in GCP
+```tf
+## VPC Network
+resource "google_compute_network" "app_network" {
+    name                    = "${var.network_name}-vpc"
+    auto_create_subnetworks = false
+}
+```
+
+<p align="center">
+  <img src="/screenshots/gcp_network.png" width="950" title="Google Cloud Network">
+  <br>
+  <em>Fig 26.: Google Cloud Network</em>
+</p>
+
+
+HCL code to create custom subnets in Network
+```tf
+## Create Subnets
+resource "google_compute_subnetwork" "app_subnet" {
+    name          = "${var.network_name}-subnet"
+    ip_cidr_range = var.subnet_cidr
+    network       = "${var.network_name}-vpc"
+    depends_on    = [
+        google_compute_network.app_network
+    ]
+}
+```
+
+<p align="center">
+  <img src="/screenshots/gcp_subnet.png" width="950" title="Google Cloud Subnet">
+  <br>
+  <em>Fig 27.: Google Cloud Subnets</em>
+</p>
+
+
+### Firewall Rules
+
+The firewall rule to allow ssh into the instances launched in the GCP subnet.
+
+```tf
+## Firewall Rule for SSH
+resource "google_compute_firewall" "ssh_access" {
+    name         = "ssh-firewall"
+    network      = google_compute_network.app_network.name
+    allow {
+        protocol = "tcp"
+        ports    = ["22"]
+    }
+    source_ranges = ["0.0.0.0/0"]
+    depends_on    = [
+        google_compute_network.app_network
+    ]
+}
+```
+
+
+### Google Kubernetes Engine Cluster
+
+Google Kubernetes Engine (GKE) is a management and orchestration system for Docker container  and container clusters that run within Google's public cloud services. Google Kubernetes Engine is based on Kubernetes, Google's open source container management system. 
+
+There are two types of GKE clusters in Google Cloud based on networking i.e;
+- Legacy Routing Clusters
+- VPC-native Clusters
+
+In `Legacy clusters`, the kubernetes Pods and services are in abstraction from outside network whereas, in `VPC-native` clusters the pods and services networks works as secondary network ranges to the VPC or Google Cloud network. The VPC cluster enables the pods to connect with  outside network without any extra configurations in cluster.
+
+The GKE cluster can be of two types based on location i.e;
+- Zonal Clusters
+- Regional Clusters
+
+A `zonal cluster`, the cluster master along with the worker nodes are only present in a single zone. In contrast, in a `regional cluster`, cluster master nodes are present in multiple zones in the region. For that reason, regional clusters should be preferred.
+
+The project provisions `Regional VPC-native GKE cluster`. In the current cluster, the password based authentication is disabled, only token based authentication is supported. In GKE cluster, worker nodes are launched inside the node_pools.  HCL code for GKE cluster provisioning is as follows: 
+
+```tf
+resource "google_container_cluster" "kubernetes_cluster" {
+    name = var.cluster_name
+    location = var.cluster_zone
+    master_auth {
+        username  = ""
+        password  = ""
+        client_certificate_config {
+            issue_client_certificate = false
+        }
+    }
+    ip_allocation_policy {
+        cluster_ipv4_cidr_block = var.pods_network_cidr
+        services_ipv4_cidr_block = var.services_network_cidr
+    }
+    remove_default_node_pool = true
+    initial_node_count = var.node_count
+    network = google_compute_network.app_network.name
+    subnetwork = google_compute_subnetwork.app_subnet.name
+    addons_config {
+        http_load_balancing {
+            disabled = var.load_balancing_state
+        }
+        horizontal_pod_autoscaling {
+            disabled = var.pod_scaling_state
+        }
+    }
+}
+```
+
+<p align="center">
+  <img src="/screenshots/gcp_cluster.png" width="950" title="Google Cloud GKE Cluster">
+  <br>
+  <em>Fig 28.: Google Kubernetes Cluster</em>
+</p>
+
+
+### Google Kubernetes Engine Cluster Node Pool
+
+The worker nodes are launched in google kubernetes engine node pools. HCL Code is as following:
+
+```tf
+resource "google_container_node_pool" "kubernetes_node_pool"{
+    name = var.node_pool_name
+    location = var.cluster_zone
+    cluster = google_container_cluster.kubernetes_cluster.name
+    node_count = var.node_count
+    node_config {
+        preemptible = var.node_preemptible_state
+        metadata = {
+            disable-legacy-endpoints = "true"
+        }
+        disk_size_gb = var.node_disk_size
+        machine_type = var.node_machine_type
+        oauth_scopes = [
+           "https://www.googleapis.com/auth/logging.write",
+            "https://www.googleapis.com/auth/monitoring",
+        ]
+    }
+}
+```
+
+<p align="center">
+  <img src="/screenshots/gcp_node_pool.png" width="950" title="Google Cloud GKE Node Pool">
+  <br>
+  <em>Fig 29.: Google Kubernetes Cluster Node Pool</em>
+</p>
+
+
+## Module : vpn
+
+The module enables the private connectivity between the resources provisioned in Google and Amazon public clouds using Site-to-Site VPN.
+
+```tf
+module "gcp_aws_vpn" {
+    source = "./modules/vpn"
+    aws_vpc_id = module.aws_cloud.vpc_id
+    aws_route_table_ids = [module.aws_cloud.public_route_table_id, module.aws_cloud.private_route_table_id]
+    gcp_network_id = module.gcp_cloud.network_id
+}
+```
+
 
