@@ -278,9 +278,9 @@ The HCL code for priate subnets is shown below similiarly the public subnets can
 ```tf
 ## Private Subnets
 resource "aws_subnet" "private_subnets" {
-    count  = length(data.aws_availability_zones.available_zones.names)
-    cidr_block  = cidrsubnet(var.vpc_cidr_block,8,"${10+count.index}")
-    vpc_id      = aws_vpc.backend_network.id
+    count              = length(data.aws_availability_zones.available_zones.names)
+    cidr_block         = cidrsubnet(var.vpc_cidr_block,8,"${10+count.index}")
+    vpc_id             = aws_vpc.backend_network.id
     availability_zone  = element(data.aws_availability_zones.available_zones.names,count.index)
     tags  = {
         Name  = "Private Subnet - ${element(data.aws_availability_zones.available_zones.names,count.index)}"
@@ -333,7 +333,7 @@ An `Internet Gateway` is a logical connection between an Amazon VPC and the Inte
 ## Internet Gateway
 resource "aws_internet_gateway" "application_igw" {
     vpc_id = aws_vpc.backend_network.id
-    tags = {
+    tags   = {
         Name = "Backend-IGW"
     }
     depends_on = [
@@ -457,7 +457,7 @@ HCL Code to create Instance Key-Pair
 ```tf
 #Creating AWS Key Pair for EC2 Instance Login
 resource "aws_key_pair" "upload_db_instance_key" {
-        key_name = var.key_name
+        key_name   = var.key_name
         public_key = tls_private_key.db_instance_key.public_key_openssh
         depends_on = [
                 tls_private_key.db_instance_key
@@ -482,23 +482,23 @@ resource "aws_security_group" "db_server_security_group" {
         description = "Mysql Server Access from GCP and SSH from VPC Network"
         vpc_id     = var.vpc_id
         ingress {
-                protocol = "tcp"
-                from_port = 22
-                to_port = 22
+                protocol    = "tcp"
+                from_port   = 22
+                to_port     = 22
                 cidr_blocks = [var.vpc_cidr_block]
                 description = "SSH Access"
         }
         ingress {
-                protocol = "tcp"
-                from_port = var.db_port
-                to_port =   var.db_port
+                protocol    = "tcp"
+                from_port   = var.db_port
+                to_port     =   var.db_port
                 cidr_blocks = var.gcp_network_cidrs
                 description = "Mysql Server Access from GCP Cloud "
         }
         egress {
-                protocol = -1
-                from_port = 0
-                to_port = 0
+                protocol    = -1
+                from_port   = 0
+                to_port     = 0
                 cidr_blocks = ["0.0.0.0/0"]
         }
         tags = {
@@ -522,9 +522,9 @@ The HCL Code for EC2 instance resource is as shown below:
 ```tf
 #Creating EC2 instance for Database Server
 resource "aws_instance" "db_server" {
-        ami           = var.ami_id
-        instance_type = var.instance_type
-        subnet_id     = var.private_subnet_id
+        ami                    = var.ami_id
+        instance_type          = var.instance_type
+        subnet_id              = var.private_subnet_id
         vpc_security_group_ids = [aws_security_group.db_server_security_group.id]
         key_name               = aws_key_pair.upload_db_instance_key.key_name
         tags = {
@@ -546,3 +546,64 @@ resource "aws_instance" "db_server" {
 
 
 ## Module : aws_bastion_host
+
+The module creates the ec2 instance as Bastion host to interact with the database server launched in the private subnet. The resources are created similiar to the database server.
+The HCL code to call module is as follows:
+
+```tf
+module "aws_bastion_host" {
+  source                             = "./modules/aws_bastion_host"
+  vpc_id                             = module.aws_cloud.vpc_id
+  bastion_ami_id                     = var.aws_bastion_ami_id
+  bastion_instance_type              = var.aws_bastion_instance_type
+  public_subnet_id                   = module.aws_cloud.public_subnets[0]
+  key_name                           = var.aws_bastion_key_name
+}
+```
+
+
+## Module : db_configure
+
+The module uploads the mongo database configuration playbook to the bastion host and configures the mongo database on EC2 instance launched in the private subnet. 
+
+```tf
+module "db_server_configure" {
+  source                             = "./modules/db_configure"
+  connection_user                    = var.aws_bastion_connection_user
+  db_connection_user                 = var.aws_db_server_connection_user
+  connection_type                    = var.aws_connection_type
+  bastion_host_public_ip             = module.aws_bastion_host.public_ip
+  bastion_host_key_name              = module.aws_bastion_host.key_name
+  db_server_private_ip               = module.database_server.db_private_ip
+  db_instance_key_name               = module.database_server.key_name
+  mongo_db_root_username             = var.aws_mongo_db_root_username
+  mongo_db_root_password             = var.aws_mongo_db_root_password
+  mongo_db_server_port               = var.aws_mongo_db_server_port
+  mongo_db_data_path                 = var.aws_mongo_db_data_path
+  mongo_db_application_username      = var.aws_mongo_db_application_username
+  mongo_db_application_user_password = var.aws_mongo_db_application_user_password
+  mongo_db_application_db_name       = var.aws_mongo_db_application_db_name
+}
+```
+
+> Parameters:
+>
+> aws_bastion_connection_user => Username for remote connection to bastion host
+>
+> aws_db_server_connection_user => Username for remote connection to database server
+>
+> aws_connection_type           => Connection type for remote connection to instances
+>
+> aws_mongo_db_root_username    => Database admin username
+>
+> aws_mongo_db_root_password    => Database admin user password
+>
+> aws_mongo_db_server_port      => Database server port
+>
+> aws_mongo_db_data_path        => Database data directory path
+>
+> aws_mongo_db_application_username      => Database Application user
+>
+> aws_mongo_db_application_user_password => Database Application user password
+>
+> aws_mongo_db_application_db_name       => Application database name
