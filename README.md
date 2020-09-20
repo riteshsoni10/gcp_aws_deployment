@@ -787,7 +787,7 @@ resource "google_container_cluster" "kubernetes_cluster" {
 ```
 
 <p align="center">
-  <img src="/screenshots/gcp_cluster.png" width="950" title="Google Cloud GKE Cluster">
+  <img src="/screenshots/gke_cluster.png" width="950" title="Google Cloud GKE Cluster">
   <br>
   <em>Fig 28.: Google Kubernetes Cluster</em>
 </p>
@@ -819,7 +819,7 @@ resource "google_container_node_pool" "kubernetes_node_pool"{
 ```
 
 <p align="center">
-  <img src="/screenshots/gcp_node_pool.png" width="950" title="Google Cloud GKE Node Pool">
+  <img src="/screenshots/gke_node_pool.png" width="950" title="Google Cloud GKE Node Pool">
   <br>
   <em>Fig 29.: Google Kubernetes Cluster Node Pool</em>
 </p>
@@ -843,7 +843,7 @@ module "gcp_aws_vpn" {
 A Site-to-Site VPN connection offers two VPN tunnels between a virtual private gateway or a transit gateway on the AWS side, and a customer gateway (which represents a VPN device) on the remote (Google Cloud) side. For Site-to-Site VPN Connection we require virtual private gateway, customer gateway and at last vpn tunnel resource on AWS side.  
 
 <p align="center">
-  <img src="/screenshots/aws_vpn.png" width="950" title="AWS VPN Overview">
+  <img src="/screenshots/aws_vpn.png" width="450" title="AWS VPN Overview">
   <br>
   <em>Fig 30.: AWS VPN Overview</em>
 </p>
@@ -912,3 +912,97 @@ resource "aws_vpn_connection" "aws_to_gcp" {
 
 ### Google Cloud VPN Resources
 
+The static Public IP is required which will be passed to AWS network for configuration of customer gateway. 
+
+
+**VPN Gateway**
+
+The Google Cloud VPN Gateway works in a similiar way as AWS Virtual Private Gateway
+
+```tf
+## VPN Gateway
+resource "google_compute_vpn_gateway" "gcp_aws_gateway" {
+    name = "vpn-gateway"
+    network = var.gcp_network_id
+}
+```
+
+Some firewall forwarding rules must be attached with the VPN gateway such as 
+- Protocol: ESP
+- Protocol: UDP, Port: 500,4500
+
+**Google Compute Router**
+
+`Cloud Router` is a fully distributed and managed Google Cloud service that programs custom dynamic routes and scales with your network traffic. Cloud Router works with both legacy networks and Virtual Private Cloud (VPC) networks. Cloud Router isn't a connectivity option, but a service that works over Cloud VPN or Cloud Interconnect connections to `provide dynamic routing` by using the Border Gateway Protocol (BGP) for VPC networks.
+
+```tf
+resource "google_compute_router" "gcp_vpn_router" {
+    name = "gcp-vpn-router"
+    network = var.gcp_network_id
+    bgp{
+        asn = aws_customer_gateway.google.bgp_asn
+    }
+    depends_on = [
+        aws_customer_gateway.google,
+    ]
+}
+```
+
+**VPN Tunnel**
+
+The VPN tunnel resource helps in establishing the connection from GCP to AWS privately.
+
+```tf
+## VPN tunnel
+resource "google_compute_vpn_tunnel"  "gcp_aws_vpn" {
+    name               = "gcp-aws-vpn-tunnel-1"
+    peer_ip            = aws_vpn_connection.aws_to_gcp.tunnel1_address
+    shared_secret      = aws_vpn_connection.aws_to_gcp.tunnel1_preshared_key
+    ike_version        = 1
+    target_vpn_gateway = google_compute_vpn_gateway.gcp_aws_gateway.id
+    router             = google_compute_router.gcp_vpn_router.id
+    depends_on         = [
+        aws_vpn_connection.aws_to_gcp,
+        google_compute_vpn_gateway.gcp_aws_gateway,
+        google_compute_router.gcp_vpn_router
+    ]
+}
+```
+
+
+## Module : kubernetes
+
+The module is responsible for application deployment on top of kubernetes cluster over Google Cloud.
+
+```tf
+module "application_deployment" {
+    source              = "./modules/kubernetes"
+    aws_vpc_cidr        = var.aws_vpc_cidr_block
+    mongo_db_host       = module.database_server.db_private_ip
+    mongo_db_port       = var.aws_mongo_db_server_port
+    app_image_name      = var.app_docker_image_name
+    app_container_port  = var.app_container_port
+    app_port            = var.app_expose_port
+    db_app_username     = var.aws_mongo_db_application_username
+    db_app_password     = var.aws_mongo_db_application_user_password
+    db_database_name    = var.aws_mongo_db_application_db_name
+}
+```
+
+
+### Kubernetes Secret Resource
+
+The Database application user credentials are stored in kubernetes secret resource to prevent passing credentils in plain text to deployment resource. HCL Code to create secret resource :
+
+```tf
+resource "kubernetes_secret" "db_secret" {
+        metadata{
+                name = "mongo-db-secret"
+        }
+        data = {
+                username      = var.db_app_username
+                password      = var.db_app_password
+                database      = var.db_database_name
+        }
+}
+```
