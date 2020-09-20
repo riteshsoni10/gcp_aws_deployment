@@ -78,7 +78,7 @@ variable "aws_mongo_db_root_password" {
 
 variable "aws_mongo_db_server_port" {
 	type = string
-	description = "Database Server Private IP"
+	description = "Database Server Port"
 }
 
 variable "aws_mongo_db_data_path" {
