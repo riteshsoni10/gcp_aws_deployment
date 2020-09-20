@@ -1051,6 +1051,12 @@ You should have configured IAM profile in the controller node by following instr
 
 5. Then, `terraform apply -auto-approve`
 
+<p align="center">
+  <img src="/screenshots/gcp_resource_output.png" width="950" title="Teraform Output">
+  <br>
+  <em>Fig 35.: Terraform Output </em>
+</p>
+
 
 In case, you would like to deploy applications using `kubectl` cli on GKE cluster; so `gcloud SDK` is necessary for kubectl configuration. For example:
 
@@ -1065,13 +1071,6 @@ When you are done playing
 ```sh
 terraform destroy -auto-approve
 ```
-
-<p align="center">
-  <img src="/screenshots/gcp_resource_output.png" width="950" title="Teraform Output">
-  <br>
-  <em>Fig 35.: Terraform Output </em>
-</p>
-
 
 
 ## Inputs
