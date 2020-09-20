@@ -1006,3 +1006,86 @@ resource "kubernetes_secret" "db_secret" {
         }
 }
 ```
+
+
+### Kubernetes Deployment and Service Resource
+
+The `deployment kubernetes resource` is created to implement fault tolerance behaviour while running pods i.e, to restart the application pods in case anyone of them fails. The `service kubernetes resource` creates load balancer resource to serve traffic on application pods based on pod labels.
+
+
+
+# Usage Instructions
+
+You should have configured IAM profile in the controller node by following instructions.
+
+1. Clone this repository
+2. Change the working directory to `automation-scripts`
+3. Run `terraform init`
+4. Then, `terraform plan`, to see the list of resources that will be created
+5. Then, `terraform apply -auto-approve`
+
+When you are done playing
+```sh
+terraform destroy -auto-approve
+```
+
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|:----:|:-----:|:-----:|
+| aws_region_name | Default Region Name for AWS Infrastructure | string | `` | yes |
+| aws_user_profile | IAM Credentials of AWS Account with required priviledges | string | `` | yes |
+| aws_vpc_cidr_block | CIDR block for AWS VPC Network | string | `` | yes |
+| aws_db_ami_id | AMI Id for launching  Database Server EC2 Instance | string | `` | yes |
+| aws_db_instance_type | EC2 Instance Type for Database Server | string | `` | yes |
+| aws_db_key_name | Key name for Database Server EC2 instannce | string | `` | yes |
+| aws_bastion_ami_id | AMI Id for launching Bastion Host EC2 Instance | string | `` | yes |
+| aws_bastion_instance_type | EC2 Instance Type for Bastion Host in AWS | string | `` | yes |
+| aws_bastion_key_name | Key name for Bastion Host EC2 instannce | string | `` | yes |
+| aws_bastion_connection_user | Username for SSH connection to Bastion Host EC2 instance | string | `ec2-user` | yes |
+| aws_db_server_connection_user | Username for SSH connection to Database Server EC2 instance | string | `ec2-user` | yes |
+| aws_connection_type | Type of connection for remote-exec provisioner like (ssh,winrm) | string | `ssh` | no |
+| app_expose_port | Port Numer to Expose the Application in Kubernetes Service | number | `` | yes |
+| app_container_port | Port Number on which Application is exposed in Image | number | `` | yes |
+| app_docker_image_name | Docker Image for the applcation Pods | string | `string` | yes |
+| aws_mongo_db_root_username | Database Server Admin Username | string | `` | yes |
+| aws_mongo_db_root_password | Database server Admin User Password  | string | `` | yes |
+| aws_mongo_db_server_port | Database Server Port Number | string | `` | yes |
+| aws_mongo_db_data_path | Data Directory of mongo Database Server | string | `` | yes |
+| aws_mongo_db_application_username | Database Application Username" | string | `` | yes |
+| aws_mongo_db_application_user_password | Database Application User Password | string | `` | yes |
+| aws_mongo_db_application_db_name | Database Name | string | `` | yes |
+| gcp_credentials_file_name | GCP Credentials File name" | string | `` | yes |
+| gcp_region_name | Region Name to launch GCP Resources | string | `` | yes |
+| gcp_project_id | Unique Project Id for Application Deployment | string | `` | yes |
+| gcp_network_name | GCP VPC Network Name | string | `` | yes |
+| gcp_subnet_cidr | Application Subnet CIDR/ Prefix | string | `` | yes |
+| gcp_pods_network_cidr | Application Pods Subnet CIDR/ Prefix | string | `` | yes |
+| gcp_services_network_cidr | Application Pods Services Subnet CIDR/ Prefix | string | `` | yes |
+| gcp_cluster_name | Kubernetes Cluster Name | string | `` | yes |
+| gcp_cluster_zone | Cluster Zone name such as asiasoutheast-1 | string | `` | yes |
+| gcp_load_balancing_state | Boolean value to enable/disable HTTP Load Balanacing | bool | `` | yes |
+| gcp_pod_scaling_state | Enable/Disable Horizotal Scaling of Pods | bool | `` | yes |
+| gcp_node_count | Number of nodes in cluster | number | `` | yes |
+| gcp_node_preemptible_state | Enable/Disable Nodes Premptible state | bool | `` | yes |
+| gcp_node_machine_type | GKE Worker Nodes Instance Machine Type| string | `` | yes |
+| gcp_node_disk_size | GKE Worker Nodes Disk Size in GB | string | `` | yes |
+| gcp_node_pool_name | Node Pool Cluster Name | string | `` | yes |
+
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| gcp_gke_endpoint | GKE Cluster Endpoint |
+| aws_bastion_public_ip | Bastion Host Public IP |
+| aws_NAT_public_ip | Public IP of AWS NAT Gateway |
+| aws_public_subnet_cidrs |  List of Public Subnet CIDR  blocks |
+| aws_private_subnet_cidrs | List of Private Subnet CIDR  blocks  |
+| aws_public_subnet_ids | List of Public Subnet Ids |
+| aws_private_subnet_ids | List of Private Subnet Ids |
+| database_server_private_ip | Private IPs of Database Server EC instance |
+| database_server_key_name | Key Pair Name used during launching Database Server EC2 instance |
+| application_endpoint | Public IP of Load Balancer for Accessing Application |
+
