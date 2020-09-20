@@ -909,6 +909,12 @@ resource "aws_vpn_connection" "aws_to_gcp" {
 }
 ```
 
+<p align="center">
+  <img src="/screenshots/aws_gcp_vpn.png" width="950" title="AWS VPN">
+  <br>
+  <em>Fig 31.: AWS VPN </em>
+</p>
+
 
 ### Google Cloud VPN Resources
 
@@ -947,6 +953,13 @@ resource "google_compute_router" "gcp_vpn_router" {
     ]
 }
 ```
+
+<p align="center">
+  <img src="/screenshots/gcp_vpn_router.png" width="950" title="GCP VPN">
+  <br>
+  <em>Fig 32.: GCP Compute Router </em>
+</p>
+
 
 **VPN Tunnel**
 
@@ -1012,6 +1025,11 @@ resource "kubernetes_secret" "db_secret" {
 
 The `deployment kubernetes resource` is created to implement fault tolerance behaviour while running pods i.e, to restart the application pods in case anyone of them fails. The `service kubernetes resource` creates load balancer resource to serve traffic on application pods based on pod labels.
 
+<p align="center">
+  <img src="/screenshots/application_service.png" width="950" title="Application Service">
+  <br>
+  <em>Fig 33.: Kubernetes Service Resource </em>
+</p>
 
 
 # Usage Instructions
@@ -1022,12 +1040,25 @@ You should have configured IAM profile in the controller node by following instr
 2. Change the working directory to `automation-scripts`
 3. Run `terraform init`
 4. Then, `terraform plan`, to see the list of resources that will be created
+
+<p align="center">
+  <img src="/screenshots/total_resources.png" width="950" title="Teraform Resource Count">
+  <br>
+  <em>Fig 34.: Terraform Total Number of Resources </em>
+</p>
+
 5. Then, `terraform apply -auto-approve`
 
 When you are done playing
 ```sh
 terraform destroy -auto-approve
 ```
+
+<p align="center">
+  <img src="/screenshots/gcp_resource_output.png" width="950" title="Teraform Output">
+  <br>
+  <em>Fig 35.: Terraform Output </em>
+</p>
 
 
 ## Inputs
