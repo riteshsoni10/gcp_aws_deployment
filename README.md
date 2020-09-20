@@ -4,6 +4,12 @@ The project is utilises resources hosted in *two public Clouds* i.e; `Google Clo
 
 **Project Flow**
 
+<p align="center">
+  <img src="/screenshots/infra_flow.png" width="950" title="Project Architecture">
+  <br>
+  <em>Fig 1.: Project Architecture </em>
+</p>
+
 
 ## Scope of Project
 
