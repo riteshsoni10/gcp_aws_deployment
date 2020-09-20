@@ -3,11 +3,6 @@
 The project is utilises resources hosted in *two public Clouds* i.e; `Google Cloud Platform and Amazon Public Cloud`.The *application* is deployed in Kubernetes cluster managed by `Google Kubernetes Engine` provisioned and configured with the help of terraform. The *Database Server* is hosted in AWS Public cloud. The inter-connectivity between the public clouds is preformed using `Site-To-Site VPN`.
 
 **Project Flow**
-<p align="center">
-  <img src="/screenshots/infra_flow.jpg" width="950" title="Infrastructure Flow">
-  <br>
-  <em>Fig 1.: Project Flow Diagram </em>
-</p>
 
 
 ## Scope of Project
