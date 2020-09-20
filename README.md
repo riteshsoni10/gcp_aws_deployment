@@ -587,6 +587,51 @@ module "db_server_configure" {
 ```
 
 
+### Upload Playbook and DB instance Key
+
+The playbook is uploaded from the controller node to the Bastion Host and the ansible-playbook is remotely executed on the bastion host to configure the Mongo Database server on database instance launched in private subnet. The `file` provisioner is used to upload the playbook and the database instance private key to the bastion host
+
+```tf
+resource "null_resource" "upload_db_playbook"{
+        provisioner "file" {
+                source = "db_configuration_scripts"
+                destination = "/tmp/"
+                connection {
+                        type        = var.connection_type
+                        user        = var.connection_user
+                        private_key = file(var.bastion_host_key_name)
+                        host        = var.bastion_host_public_ip
+                }
+        }
+}
+```
+
+### Playbook execution for Database Confirguration
+
+The playbook is exeuted in the bastion host to install and configure the database server on EC2 instance launched in private subnet.
+
+```tf
+resource  "null_resource" "mongo_db_configure"{
+    depends_on = [
+        null_resource.upload_db_server_key
+    ]
+    connection{
+        type = var.connection_type
+        host = var.bastion_host_public_ip
+        user  = var.connection_user
+        private_key = file(var.bastion_host_key_name)
+    }
+    provisioner remote-exec {
+        inline =[
+            "sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm -y",
+            "sudo dnf install ansible -y",
+            "sudo ansible-playbook -u ${var.db_connection_user} -i ${var.db_server_private_ip}, --private-key /tmp/${var.db_instance_key_name} /tmp/db_configuration_scripts/db_server.yml  -e mongo_db_root_username=${var.mongo_db_root_username} -e mongo_db_root_password=${var.mongo_db_root_password} -e mongo_db_server_port=${var.mongo_db_server_port} -e mongo_db_data_path=${var.mongo_db_data_path} -e application_username=${var.mongo_db_application_username} -e application_user_password=${var.mongo_db_application_user_password} -e application_db_name=${var.mongo_db_application_db_name}  --ssh-extra-args=\"-o stricthostkeychecking=no\""
+        ]
+    }
+}
+```
+
+
 ## Module : gcp
 
 The module is responsible to configure custom network, subnets, vpn tunnels and provision `Google Kubernetes Engine` Cluster in `Google Cloud Platform`.
@@ -793,4 +838,77 @@ module "gcp_aws_vpn" {
 }
 ```
 
+### AWS VPN Resources
+
+A Site-to-Site VPN connection offers two VPN tunnels between a virtual private gateway or a transit gateway on the AWS side, and a customer gateway (which represents a VPN device) on the remote (Google Cloud) side. For Site-to-Site VPN Connection we require virtual private gateway, customer gateway and at last vpn tunnel resource on AWS side.  
+
+<p align="center">
+  <img src="/screenshots/aws_vpn.png" width="950" title="AWS VPN Overview">
+  <br>
+  <em>Fig 30.: AWS VPN Overview</em>
+</p>
+
+
+**Virtual Private Gateway**
+
+A virtual private gateway is the VPN concentrator on the Amazon side of the Site-to-Site VPN connection. In this project a virtual private gateway is created and attached to the databased VPC from which the Site-to-Site VPN connection is to be established.
+
+**Route Propagation**
+
+The traffic from GCP networks is configured in route table to pass via virtual private gateway
+
+```sh
+## Route Propogation
+resource "aws_vpn_gateway_route_propagation" "public_private" {
+    count = length(var.aws_route_table_ids)
+    route_table_id = element(var.aws_route_table_ids,count.index)
+    vpn_gateway_id = aws_vpn_gateway.virtual_gw.id
+    depends_on = [
+        aws_vpn_gateway.virtual_gw,
+    ]
+}
+```
+
+**Customer Gateway**
+
+A customer gateway is a resource that is created in AWS which represents the customer gateway device in your other network. When a customer gateway is created, the information about the device at other end of network is passed to AWS; i.e Public IP of GCP Cloud Gateway
+
+```tf
+## Customer Gateway with Public IP of GCP Cloud Gateway
+resource "aws_customer_gateway" "google" {
+    bgp_asn = 65000
+    ip_address = google_compute_address.vpn_ip.address
+    type = "ipsec.1"
+    tags = {
+        Name = "Google Cloud Customer Gateway"
+    }
+    depends_on = [
+        google_compute_address.vpn_ip,
+    ]
+}
+```
+
+**VPN Tunnel**
+
+The VPN tunnel is created with the combination of all the above resources i.e virtual private gateway and customer gateway.
+
+```tf
+## AWS VPN Tunnel
+resource "aws_vpn_connection" "aws_to_gcp" {
+    vpn_gateway_id = aws_vpn_gateway.virtual_gw.id
+    customer_gateway_id = aws_customer_gateway.google.id
+    type = "ipsec.1"
+    static_routes_only = false
+    tags = {
+        Name = " AWS-To-Google VPN"
+    }
+    depends_on = [
+        aws_vpn_gateway.virtual_gw,
+        aws_customer_gateway.google,
+    ]
+}
+```
+
+
+### Google Cloud VPN Resources
 
