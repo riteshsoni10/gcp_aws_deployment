@@ -1154,7 +1154,7 @@ terraform destroy -auto-approve
 **3. Kubernetes Worker Nodes**
 
 <p align="center">
-  <img src="/screenshots/gke_console_worker_nodes.png" width="950" title="Worker Nodes">
+  <img src="/screenshots/gcp_console_worker_nodes.png" width="950" title="Worker Nodes">
   <br>
   <em>Fig 38.: GKE Cluster Worker Nodes </em>
 </p>
