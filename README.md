@@ -32,6 +32,10 @@ The project is utilises resources hosted in *two public Clouds* i.e; `Google Clo
 - AWS Cloud admin user account
 - Google Cloud admin user account
 
+> Recommended Controller Node Operating System: 
+>
+> Redhat Enterprise Linux 8
+
 
 ### IAM User in AWS Account
 
@@ -1159,7 +1163,7 @@ terraform destroy -auto-approve
   <em>Fig 38.: GKE Cluster Worker Nodes </em>
 </p>
 
-**4. Google Cloud VPN
+**4. Google Cloud VPN**
 
 <p align="center">
   <img src="/screenshots/gcp_console_vpn.png" width="950" title="VPN">
@@ -1167,7 +1171,7 @@ terraform destroy -auto-approve
   <em>Fig 39.: GCP VPN </em>
 </p>
 
-**5.  AWS VPC Network
+**5.  AWS VPC Network**
 
 <p align="center">
   <img src="/screenshots/aws_console_vpc.png" width="950" title="AWS VPC">
@@ -1175,7 +1179,7 @@ terraform destroy -auto-approve
   <em>Fig 40.: AWS VPC </em>
 </p>
 
-**6. AWS Subnets 
+**6. AWS Subnets** 
 
 <p align="center">
   <img src="/screenshots/aws_console_subnets.png" width="950" title="AWS Subnets">
